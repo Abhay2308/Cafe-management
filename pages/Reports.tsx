@@ -59,7 +59,8 @@ const Reports: React.FC<ReportsProps> = ({ employees, attendance }) => {
             'Present Days': att.filter(a => a.status === 'Present').length,
             'Absent Days': att.filter(a => a.status === 'Absent').length,
             'Half-Days': att.filter(a => a.status === 'Half-Day').length,
-            'Overtime Shifts': att.filter(a => a.status === 'Overtime').length,
+            // Fixed: Use isOvertime boolean instead of checking status for 'Overtime'
+            'Overtime Shifts': att.filter(a => a.isOvertime).length,
             'Holidays Worked': att.filter(a => a.status === 'Holiday').length,
           };
         });

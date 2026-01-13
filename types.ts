@@ -1,7 +1,7 @@
 
 export type Role = 'Barista' | 'Chef' | 'Waiter' | 'Manager' | 'Cleaner';
 
-export type AttendanceStatus = 'Present' | 'Absent' | 'Half-Day' | 'Overtime' | 'Holiday';
+export type AttendanceStatus = 'Present' | 'Absent' | 'Half-Day' | 'Holiday';
 
 export interface Employee {
   id: string;
@@ -17,6 +17,7 @@ export interface AttendanceRecord {
   employeeId: string;
   date: string;
   status: AttendanceStatus;
+  isOvertime?: boolean;
 }
 
 export interface SalaryReport {

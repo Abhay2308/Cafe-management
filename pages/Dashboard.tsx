@@ -15,13 +15,12 @@ const Dashboard: React.FC<DashboardProps> = ({ employees, attendance }) => {
   const stats = useMemo(() => {
     const todayAtt = attendance.filter(a => a.date === today);
     const present = todayAtt.filter(a => a.status === 'Present').length;
-    const extraWork = todayAtt.filter(a => a.status === 'Overtime').length;
+    const extraWork = todayAtt.filter(a => a.isOvertime).length;
     const halfDay = todayAtt.filter(a => a.status === 'Half-Day').length;
     const absent = todayAtt.filter(a => a.status === 'Absent').length;
     
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
-    
     const monthlyAtt = attendance.filter(a => {
       const d = new Date(a.date);
       return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
@@ -37,7 +36,7 @@ const Dashboard: React.FC<DashboardProps> = ({ employees, attendance }) => {
 
     return {
       totalEmployees: employees.length,
-      presentToday: present + extraWork + (halfDay * 0.5),
+      presentToday: present + (halfDay * 0.5),
       absentToday: absent + (halfDay * 0.5),
       leavesThisMonth: totalLeaves,
       salaryThisMonth: totalSalary,
@@ -74,41 +73,11 @@ const Dashboard: React.FC<DashboardProps> = ({ employees, attendance }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-        <StatCard 
-          title="Total Employees" 
-          value={stats.totalEmployees} 
-          icon={<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>}
-          color="bg-amber-600"
-          subText="Staff Strength"
-        />
-        <StatCard 
-          title="Present Today" 
-          value={stats.presentToday} 
-          icon={<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
-          color="bg-emerald-600"
-          subText="Including Shifts"
-        />
-        <StatCard 
-          title="Extra Shifts" 
-          value={stats.overtimeToday} 
-          icon={<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>}
-          color="bg-indigo-600"
-          subText="Overtime Workers"
-        />
-        <StatCard 
-          title="Monthly Leaves" 
-          value={stats.leavesThisMonth} 
-          icon={<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>}
-          color="bg-rose-600"
-          subText="Leave Days Taken"
-        />
-        <StatCard 
-          title="Total Payout" 
-          value={`₹${stats.salaryThisMonth.toLocaleString()}`} 
-          icon={<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
-          color="bg-violet-600"
-          subText="Active Salaries"
-        />
+        <StatCard title="Total Employees" value={stats.totalEmployees} icon={<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>} color="bg-amber-600" subText="Staff Strength" />
+        <StatCard title="Present Today" value={stats.presentToday} icon={<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>} color="bg-emerald-600" subText="Main Roster" />
+        <StatCard title="Overtime Active" value={stats.overtimeToday} icon={<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>} color="bg-indigo-600" subText="Extra Shifts" />
+        <StatCard title="Monthly Leaves" value={stats.leavesThisMonth} icon={<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>} color="bg-rose-600" subText="Leave Days Taken" />
+        <StatCard title="Total Payout" value={`₹${stats.salaryThisMonth.toLocaleString()}`} icon={<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>} color="bg-violet-600" subText="Active Salaries" />
       </div>
 
       <div className="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
@@ -119,24 +88,11 @@ const Dashboard: React.FC<DashboardProps> = ({ employees, attendance }) => {
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f5" />
               <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 13, fontWeight: 500}} dy={15} />
               <YAxis axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 13}} />
-              <Tooltip 
-                cursor={{fill: '#fafaf9'}}
-                contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '12px'}}
-              />
+              <Tooltip cursor={{fill: '#fafaf9'}} contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '12px'}} />
               <Bar dataKey="leaves" radius={[8, 8, 0, 0]} barSize={50} fill="#d97706" />
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </div>
-      
-      <div className="bg-amber-50 border border-amber-100 p-6 rounded-2xl flex items-center justify-between">
-        <div>
-          <h4 className="font-bold text-amber-900">Admin Tip</h4>
-          <p className="text-sm text-amber-700">Marking daily attendance ensures end-of-month salary accuracy.</p>
-        </div>
-        <Link to="/attendance" className="bg-amber-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-md hover:bg-amber-700 transition-all">
-          Update Today's Log
-        </Link>
       </div>
     </div>
   );
